@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Endüstri Faydalı Dönüşüm</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* GENEL SAYFA STİLİ */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background: radial-gradient(circle at center, #2b3a4a 0%, #1a202c 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative; /* Logo konumlandırması için gerekli */
+        }
+
+        /* Arka plan süslemeleri (Tech çizgileri) */
+        .background-tech {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+
+        /* --- YENİ EKLENEN LOGO STİLİ --- */
+        .company-logo {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            width: 80px; /* Logonun boyutunu buradan ayarlayabilirsin */
+            height: auto;
+            z-index: 100;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .company-logo:hover {
+            opacity: 1;
+        }
+
+        .container {
+            text-align: center;
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        /* BAŞLIK TASARIMI */
+        .main-header {
+            background: linear-gradient(180deg, #e0e0e0 0%, #cfcfcf 100%);
+            display: inline-block;
+            padding: 15px 60px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            margin-bottom: 50px;
+            position: relative;
+            border: 2px solid #fff;
+        }
+
+        .main-header h1 {
+            margin: 0;
+            color: #2d2d2d;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 900;
+        }
+
+        /* KART ALANI (GRID) */
+        .card-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* KART TASARIMI */
+        .card {
+            width: 220px;
+            height: 320px;
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Kartın Üst (Renkli) Kısmı */
+        .card-icon-area {
+            flex: 3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 4rem;
+            position: relative;
+        }
+        
+        /* Kartın Alt (Metin) Kısmı */
+        .card-title-area {
+            flex: 1;
+            background-color: white;
+            color: #3e5063;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 1.2;
+            font-size: 1.1rem;
+            position: relative;
+        }
+
+        .card-title-area::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid white;
+        }
+
+        /* ÖZEL RENKLER VE GRADIENTLER */
+        .c-blue .card-icon-area { background: linear-gradient(135deg, #2196f3, #4fc3f7); }
+        .c-blue .card-title-area { color: #1565c0; }
+
+        .c-green .card-icon-area { background: linear-gradient(135deg, #66bb6a, #a5d6a7); }
+        .c-green .card-title-area { color: #2e7d32; }
+
+        .c-teal .card-icon-area { background: linear-gradient(135deg, #26a69a, #80cbc4); }
+        .c-teal .card-title-area { color: #00695c; }
+
+        .c-purple .card-icon-area { background: linear-gradient(135deg, #7e57c2, #b39ddb); }
+        .c-purple .card-title-area { color: #512da8; }
+
+        /* MODAL (BİLGİ PENCERESİ) STİLİ */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-active {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .modal-active .modal-content {
+            transform: scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 50%;
+            color: white;
+            display: inline-block;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .modal-text {
+            line-height: 1.6;
+            color: #666;
+        }
+
+        /* MOBİL UYUMLULUK */
+        @media (max-width: 768px) {
+            body { height: auto; padding: 50px 0; }
+            .company-logo { width: 60px; top: 20px; left: 20px; } /* Mobilde logo biraz küçülür */
+            .main-header { padding: 10px 30px; margin-top: 40px; }
+            .main-header h1 { font-size: 1.2rem; }
+            .card { width: 100%; max-width: 300px; height: 250px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="background-tech"></div>
+
+    <img src="IQV-ICON-03.png" alt="Şirket Logosu" class="company-logo">
+
+    <div class="container">
+        <div class="main-header">
+            <h1>Endüstri Faydalı Dönüşüm</h1>
+        </div>
+
+        <div class="card-container">
+            <div class="card c-blue" onclick="openModal('digital')">
+                <div class="card-icon-area">
+                    <i class="fa-solid fa-microchip"></i>
+                </div>
+                <div class="card-title-area">
+                    Dijital<br>Dönüşüm
+                </div>
+            </div>
+
+            <div class="card c-green" onclick="openModal('green')">
+                <div class="card-icon-area">
+                    <i class="fa-solid fa-leaf"></i>
+                </div>
+                <div class="card-title-area">
+                    Yeşil<br>Dönüşüm
+                </div>
+            </div>
+
+            <div class="card c-teal" onclick="openModal('twin-trans')">
+                <div class="card-icon-area">
+                    <i class="fa-solid fa-rotate"></i>
+                </div>
+                <div class="card-title-area">
+                    İkiz<br>Dönüşüm
+                </div>
+            </div>
+
+            <div class="card c-purple" onclick="openModal('digital-twin')">
+                <div class="card-icon-area">
+                    <i class="fa-solid fa-vr-cardboard"></i>
+                </div>
+                <div class="card-title-area">
+                    Dijital<br>İkiz
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="infoModal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal(event)">&times;</span>
+            <div id="mIcon" class="modal-icon"></div>
+            <h2 id="mTitle" class="modal-title">Başlık</h2>
+            <p id="mText" class="modal-text">Açıklama metni buraya gelecek.</p>
+        </div>
+    </div>
+
+    <script>
+        // İÇERİK VERİLERİ
+        const contentData = {
+            'digital': {
+                title: "DİJİTAL DÖNÜŞÜM",
+                text: "İş süreçlerinin verimliliğini artırmak için modern teknolojilerin entegrasyonu. Yapay zeka, büyük veri ve otomasyon sistemleri ile geleceğin fabrikalarını inşa ediyoruz.",
+                color: "linear-gradient(135deg, #2196f3, #4fc3f7)",
+                icon: "fa-microchip"
+            },
+            'green': {
+                title: "YEŞİL DÖNÜŞÜM",
+                text: "Sürdürülebilir üretim ve karbon ayak izini azaltma hedefleri. Yenilenebilir enerji kaynakları ve çevre dostu üretim teknikleri ile doğaya saygılı endüstri.",
+                color: "linear-gradient(135deg, #66bb6a, #a5d6a7)",
+                icon: "fa-leaf"
+            },
+            'twin-trans': {
+                title: "İKİZ DÖNÜŞÜM",
+                text: "Dijital ve Yeşil dönüşümün eş zamanlı yürütülmesi. Hem teknolojik ilerleme hem de sürdürülebilirlik hedeflerinin bir arada gerçekleştirildiği bütünleşik strateji.",
+                color: "linear-gradient(135deg, #26a69a, #80cbc4)",
+                icon: "fa-rotate"
+            },
+            'digital-twin': {
+                title: "DİJİTAL İKİZ",
+                text: "Fiziksel varlıkların sanal ortamdaki birebir kopyası. Simülasyonlar sayesinde üretim hatalarını önceden tespit etme ve süreç optimizasyonu sağlama teknolojisi.",
+                color: "linear-gradient(135deg, #7e57c2, #b39ddb)",
+                icon: "fa-vr-cardboard"
+            }
+        };
+
+        const modal = document.getElementById('infoModal');
+        const mTitle = document.getElementById('mTitle');
+        const mText = document.getElementById('mText');
+        const mIcon = document.getElementById('mIcon');
+
+        function openModal(type) {
+            const data = contentData[type];
+            mTitle.innerText = data.title;
+            mText.innerText = data.text;
+            mIcon.innerHTML = `<i class="fa-solid ${data.icon}"></i>`;
+            mIcon.style.background = data.color;
+            modal.classList.add('modal-active');
+        }
+
+        function closeModal(event) {
+            if (event.target === modal || event.target.classList.contains('close-btn')) {
+                modal.classList.remove('modal-active');
+            }
+        }
+    </script>
+</body>
+</html>
